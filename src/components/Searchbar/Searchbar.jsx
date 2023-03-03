@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Formik, Form, Field } from 'formik';
 
+import styles from './SearchBar.module.css';
+
 export class Searchbar extends Component {
   initialValues = {
     theme: '',
@@ -13,14 +15,14 @@ export class Searchbar extends Component {
 
   render() {
     return (
-      <header className="searchbar">
+      <header className={styles.searchbar}>
         <Formik initialValues={this.initialValues} onSubmit={this.handleSubmit}>
-          <Form className="form">
-            <button type="submit" className="button">
-              <span className="button-label">Search</span>
+          <Form className={styles.searchForm}>
+            <button type="submit" className={styles.searchFormButton}>
+              <span className={styles.searchFormButtonLabel}>Search</span>
             </button>
             <Field
-              className="input"
+              className={styles.searchFormInput}
               type="text"
               autoComplete="off"
               autoFocus

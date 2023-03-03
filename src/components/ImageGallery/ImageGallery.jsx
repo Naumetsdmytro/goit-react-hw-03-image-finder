@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { fetchImagesByTheme } from '../../services/pixabayAPI';
 import { ImageGalleryItem } from 'components/ImageGalleryItem';
 
+import styles from './ImageGallery.module.css';
+
 export class ImageGallery extends Component {
   state = {
     images: null,
@@ -31,9 +33,9 @@ export class ImageGallery extends Component {
     const { images, error } = this.state;
     return (
       <>
-        {error && <h2>{error.message}</h2>}
+        {/* // {error && <h2>{error.message}</h2>} */}
         {images && (
-          <ul className="gallery">
+          <ul className={styles.gallery}>
             {images.map(image => (
               <ImageGalleryItem image={image} key={image.id} />
             ))}

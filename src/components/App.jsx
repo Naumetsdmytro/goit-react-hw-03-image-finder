@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { Searchbar } from './Searchbar';
 import { ImageGallery } from './ImageGallery';
 
+import styles from './App.module.css';
+
 export class App extends Component {
   state = {
     theme: '',
@@ -15,6 +17,7 @@ export class App extends Component {
   render() {
     return (
       <div
+        className={styles.app}
         style={{
           fontSize: 40,
           color: '#010101',
