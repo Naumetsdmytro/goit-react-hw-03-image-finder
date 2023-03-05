@@ -1,47 +1,79 @@
 import React, { Component } from 'react';
+import { toast } from 'react-hot-toast';
+import PropTypes from 'prop-types';
 
 import { fetchImagesByTheme } from '../../services/pixabayAPI';
 import { ImageGalleryItem } from 'components/ImageGalleryItem';
+import { Loader } from 'components/Loader';
+import { Button } from 'components/Button';
 
 import styles from './ImageGallery.module.css';
 
 export class ImageGallery extends Component {
   state = {
-    images: null,
+    images: [],
+    loading: false,
     error: false,
+    page: 1,
+    total: 0,
   };
 
   async componentDidUpdate(prevprops, prevstate) {
-    if (prevprops.theme !== this.props.theme) {
+    if (
+      prevstate.page !== this.state.page ||
+      prevprops.theme !== this.props.theme
+    ) {
+      this.setState({ loading: true });
       try {
-        const images = await fetchImagesByTheme(this.props.theme);
-        console.log(images);
-        // if (!images.ok) {
-        //   return Promise.reject(new Error('No images find :('));
-        // }
-        this.setState({
-          images: images.hits,
-        });
+        console.log(this.state.page);
+        const images = await fetchImagesByTheme(
+          this.props.theme,
+          this.state.page
+        );
+        if (images.hits.length === 0) {
+          toast.error('Please, enter a valid theme');
+        }
+        if (prevprops.theme === this.props.theme && this.state.page !== 1) {
+          this.setState(prev => ({
+            images: [...prev.images, ...images.hits],
+          }));
+          return;
+        }
+        this.setState({ images: images.hits, total: images.total, page: 1 });
       } catch (error) {
-        console.log(error);
         this.setState({ error });
+      } finally {
+        this.setState({ loading: false });
       }
     }
   }
 
+  handleClickButton = () => {
+    this.setState(prevstate => ({
+      page: prevstate.page + 1,
+      total: prevstate.total - 12,
+    }));
+  };
+
   render() {
-    const { images, error } = this.state;
+    const { images, error, loading, total } = this.state;
     return (
       <>
-        {/* // {error && <h2>{error.message}</h2>} */}
-        {images && (
+        {error && <h3>{error.message}</h3>}
+        {loading && <Loader />}
+        {images.length > 0 && (
           <ul className={styles.gallery}>
             {images.map(image => (
               <ImageGalleryItem image={image} key={image.id} />
             ))}
           </ul>
         )}
+        {total > 12 && <Button onClick={this.handleClickButton} />}
       </>
     );
   }
 }
+
+ImageGallery.propTypes = {
+  theme: PropTypes.string.isRequired,
+};
