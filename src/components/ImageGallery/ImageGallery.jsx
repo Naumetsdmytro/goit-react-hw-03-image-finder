@@ -25,7 +25,6 @@ export class ImageGallery extends Component {
     ) {
       this.setState({ loading: true });
       try {
-        console.log(this.state.page);
         const images = await fetchImagesByTheme(
           this.props.theme,
           this.state.page
