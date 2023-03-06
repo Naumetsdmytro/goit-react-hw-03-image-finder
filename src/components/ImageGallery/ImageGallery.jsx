@@ -24,6 +24,9 @@ export class ImageGallery extends Component {
       prevprops.theme !== this.props.theme
     ) {
       this.setState({ loading: true });
+      if (prevprops.theme !== this.props.theme) {
+        this.setState({ images: [] });
+      }
       try {
         const images = await fetchImagesByTheme(
           this.props.theme,
@@ -59,7 +62,6 @@ export class ImageGallery extends Component {
     return (
       <>
         {error && <h3>{error.message}</h3>}
-        {loading && <Loader />}
         {images.length > 0 && (
           <ul className={styles.gallery}>
             {images.map(image => (
@@ -67,7 +69,8 @@ export class ImageGallery extends Component {
             ))}
           </ul>
         )}
-        {total > 12 && <Button onClick={this.handleClickButton} />}
+        {loading && <Loader />}
+        {total > 12 && !loading && <Button onClick={this.handleClickButton} />}
       </>
     );
   }
